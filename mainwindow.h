@@ -9,18 +9,19 @@
 #include "mydialog.h"
 
 struct Person{
-
-    QLineEdit* telephone;
+    QLineEdit* login;
     QLineEdit* name;
-    QComboBox* region;
-    QLineEdit* price;
+    QLineEdit* weight;
+    QLineEdit* height;
+    QLineEdit* age;
+    QLineEdit* talant;
     QLineEdit* password;
 };
 
 struct Person2{
     QComboBox* region;
     QComboBox* price;
-    QComboBox* discipline;
+    QComboBox* nominations;
     QComboBox* date;
     QComboBox* time;
 };
@@ -41,8 +42,8 @@ private:
     Person2 person2;
     QPalette* palette;
 
-    QLabel* label;
-    QLabel* infoLabel;
+//    QLabel* label;
+//    QLabel* infoLabel;
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -57,26 +58,26 @@ public:
 private slots:
     void slotTriggeredMenuBar(QAction*);
 
-    void slotPlusAndDeleteTutor(QPoint);
-    void slotAddTutor();
-    void slotDeleteTutor();
+//    void slotPlusAndDeleteTutor(QPoint);
+//    void slotAddTutor();
+//    void slotDeleteTutor();
 
-    void slotAddAllTutors();
-    void slotDeleteAllTutors();
+//    void slotAddAllTutors();
+//    void slotDeleteAllTutors();
 
     void slotDeleteDiscipline(QPoint);
     void slotAddDiscipline();
     void slotDeleteDiscipline();
 
-    void slotDeleteRegion(QPoint);
-    void slotAddRegion();
-    void slotDeleteRegion();
+//    void slotDeleteRegion(QPoint);
+//    void slotAddRegion();
+//    void slotDeleteRegion();
 
     void slotDeleteTutor2(QPoint);
     void slotDeleteTutor2();
 
-    void slotDeleteClient(QPoint);
-    void slotDeleteClient();
+//    void slotDeleteClient(QPoint);
+//    void slotDeleteClient();
 
     void changeInfoAdmin();
 

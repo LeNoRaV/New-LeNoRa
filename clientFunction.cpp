@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 void MainWindow::clientProfile(QString record_book){
-    changeMenuBar({{"Занятия","выбрать занятие","выбранные занятия","прошедшие занятия"},{"Другое","профиль клиента","настройки профиля участницы","выйти"}});
+    changeMenuBar({{"Номинации","посмотреть свои номинации"},{"Другое","профиль участницы","настройки профиля участницы","выйти"}});
     palette->setColor(QPalette::Window,Qt::lightGray);
     setPalette(*palette);
     setWindowTitle("Участница конкурса красоты");
@@ -15,78 +15,78 @@ void MainWindow::changeInfoClient(){
         getMessageBox("Нельзя оставлять поля пустыми!",true);
         return;
     }
-    if(person.telephone->text().count()!=11){
-        getMessageBox("В номере телефона недостаточно цифр! Перепроверьте его.",true);
-        return;
-    }
     QSqlQuery q(db);
-    if(!q.exec("UPDATE az_clients SET Телефон='"+person.telephone->text()
+    if(!q.exec("UPDATE lnr_participants SET Номер_зачётки='"+person.login->text()
                +"', ФИО='"+person.name->text()
                +"', Пароль='"+person.password->text()
-               +"' WHERE Телефон='"+property("telephone").toString()+"';")){
-        getMessageBox("На этот телефон уже зарегистрирован клиент",true);
+               +"', Вес='"+person.weight->text()
+               +"', Рост='"+person.height->text()
+               +"', Возраст='"+person.age->text()
+               +"', Талант='"+person.talant->text()
+               +"' WHERE Номер_зачётки='"+property("record_book").toString()+"';")){
+        getMessageBox("Эта участница уже зарегистрирована",true);
         return;
     }
-    setProperty("telephone",person.telephone->text());
+    setProperty("record_book",person.login->text());
 }
 
 static int intDeleteOrAdd;
-void MainWindow::slotChangeLesson(QPoint point){
-    intDeleteOrAdd=tableView->indexAt(point).row();
-    QMenu* menu=new QMenu(this);
-    QAction* action1=new QAction(tr("Отменить"),this);
-    QAction* action2=new QAction(tr("Отметить как прошедшее"),this);
-    connect(action1,SIGNAL(triggered()),this,SLOT(slotChangeLesson()));
-    menu->addAction(action1);
-    connect(action2,SIGNAL(triggered()),this,SLOT(slotChangeLesson()));
-    menu->addAction(action2);
-    menu->exec(QCursor::pos());
-}
+//void MainWindow::slotChangeLesson(QPoint point){
+//    intDeleteOrAdd=tableView->indexAt(point).row();
+//    QMenu* menu=new QMenu(this);
+//    QAction* action1=new QAction(tr("Отменить"),this);
+//    QAction* action2=new QAction(tr("Отметить как прошедшее"),this);
+//    connect(action1,SIGNAL(triggered()),this,SLOT(slotChangeLesson()));
+//    menu->addAction(action1);
+//    connect(action2,SIGNAL(triggered()),this,SLOT(slotChangeLesson()));
+//    menu->addAction(action2);
+//    menu->exec(QCursor::pos());
+//}
 
-void MainWindow::slotChangeLesson(){
-    QAction* action=qobject_cast<QAction*>(sender());
-    if(action==nullptr) return;
-    if(action->text()==tr("Отменить")){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
-            getMessageBox("Ошибка открытия таблиц", true);
-            return;
-        }
-        q.seek(intDeleteOrAdd);
-        QString telephone=q.value(0).toString();
-        QString date=q.value(5).toString();
-        if(!q.exec("UPDATE az_lessons SET Телефон_клиента=NULL WHERE Телефон_репетитора='"+telephone+"' AND День='"+date+"';")){
-            getMessageBox("Ошибка открытия таблицы занятий", true);
-            return;
-        }
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
-            getMessageBox("Ошибка открытия таблиц", true);
-            return;
-        }
-        model->setQuery(q);
-        tableView->reset();
-    }
-    if(action->text()==tr("Отметить как прошедшее")){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
-            getMessageBox("Ошибка открытия таблиц", true);
-            return;
-        }
-        q.seek(intDeleteOrAdd);
-        QString telephone=q.value(0).toString();
-        QString date=q.value(5).toString();
-        if(!q.exec("UPDATE az_lessons SET Было_занятие=true WHERE Телефон_репетитора='"+telephone+"' AND День='"+date+"';")){
-            getMessageBox("Ошибка открытия таблицы занятий", true);
-            return;
-        }
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
-            getMessageBox("Ошибка открытия таблиц", true);
-            return;
-        }
-        model->setQuery(q);
-        tableView->reset();
-    }
-}
+//void MainWindow::slotChangeLesson(){
+//    QAction* action=qobject_cast<QAction*>(sender());
+//    if(action==nullptr) return;
+//    if(action->text()==tr("Отменить")){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
+//            getMessageBox("Ошибка открытия таблиц", true);
+//            return;
+//        }
+//        q.seek(intDeleteOrAdd);
+//        QString telephone=q.value(0).toString();
+//        QString date=q.value(5).toString();
+//        if(!q.exec("UPDATE az_lessons SET Телефон_клиента=NULL WHERE Телефон_репетитора='"+telephone+"' AND День='"+date+"';")){
+//            getMessageBox("Ошибка открытия таблицы занятий", true);
+//            return;
+//        }
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
+//            getMessageBox("Ошибка открытия таблиц", true);
+//            return;
+//        }
+//        model->setQuery(q);
+//        tableView->reset();
+//    }
+//    if(action->text()==tr("Отметить как прошедшее")){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
+//            getMessageBox("Ошибка открытия таблиц", true);
+//            return;
+//        }
+//        q.seek(intDeleteOrAdd);
+//        QString telephone=q.value(0).toString();
+//        QString date=q.value(5).toString();
+//        if(!q.exec("UPDATE az_lessons SET Было_занятие=true WHERE Телефон_репетитора='"+telephone+"' AND День='"+date+"';")){
+//            getMessageBox("Ошибка открытия таблицы занятий", true);
+//            return;
+//        }
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента='"+property("telephone").toString()+"' AND az_lessons.Было_занятие=false;")){
+//            getMessageBox("Ошибка открытия таблиц", true);
+//            return;
+//        }
+//        model->setQuery(q);
+//        tableView->reset();
+//    }
+//}
 
 void MainWindow::currentTextChanged1(const QString str){
     if(str!="<Дисциплина>"){
@@ -111,7 +111,7 @@ void MainWindow::currentTextChanged1(const QString str){
         }
 
         QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.discipline);
+        lay->addWidget(person2.nominations);
         lay->addWidget(person2.region);
         QVBoxLayout* layout=new QVBoxLayout();
         layout->addWidget(tableView);
@@ -130,7 +130,7 @@ void MainWindow::currentTextChanged1(const QString str){
 void MainWindow::currentTextChanged2(const QString str){
     if(str!="<Регион>"){
         QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+str+"';")){
+        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+str+"';")){
             getMessageBox("Таблица не открывается",true);
             return;
          }
@@ -150,7 +150,7 @@ void MainWindow::currentTextChanged2(const QString str){
         }
 
         QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.discipline);
+        lay->addWidget(person2.nominations);
         lay->addWidget(person2.region);
         lay->addWidget(person2.price);
         QVBoxLayout* layout=new QVBoxLayout();
@@ -162,14 +162,14 @@ void MainWindow::currentTextChanged2(const QString str){
         connect(person2.price,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged3(const QString)));
     }
     else{
-        emit currentTextChanged1(person2.discipline->currentText());
+        emit currentTextChanged1(person2.nominations->currentText());
     }
 }
 
 void MainWindow::currentTextChanged3(const QString str){
     if(str!="<Цена>"){
         QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+str+";")){
+        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+str+";")){
             getMessageBox("Таблица не открывается",true);
             return;
         }
@@ -189,7 +189,7 @@ void MainWindow::currentTextChanged3(const QString str){
         }
 
         QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.discipline);
+        lay->addWidget(person2.nominations);
         lay->addWidget(person2.region);
         lay->addWidget(person2.price);
         lay->addWidget(person2.date);
@@ -209,7 +209,7 @@ void MainWindow::currentTextChanged3(const QString str){
 void MainWindow::currentTextChanged4(const QString str){
     if(str!="<Дата>"){
         QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+str+"';")){
+        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+str+"';")){
             getMessageBox("Таблица не открывается",true);
             return;
          }
@@ -229,7 +229,7 @@ void MainWindow::currentTextChanged4(const QString str){
         }
 
         QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.discipline);
+        lay->addWidget(person2.nominations);
         lay->addWidget(person2.region);
         lay->addWidget(person2.price);
         lay->addWidget(person2.date);
@@ -250,7 +250,7 @@ void MainWindow::currentTextChanged4(const QString str){
 void MainWindow::currentTextChanged5(const QString str){
     if(str!="<Время_начала>"){
         QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"'AND az_lessons.Время_начала='"+str+"';")){
+        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"'AND az_lessons.Время_начала='"+str+"';")){
             getMessageBox("Таблица не открывается",true);
             return;
          }
@@ -273,54 +273,15 @@ void MainWindow::slotChooseDiscipline(QPoint point){
 
 void MainWindow::slotChooseDiscipline(){
     QSqlQuery q(db);
-    if(person2.discipline->currentText()!="<Дисциплина>"){
-        if(person2.region->currentText()!="<Регион>"){
-            if(person2.price->currentText()!="<Цена>"){
-                if(person2.date->currentText()!="<День>"){
-                    if(person2.time->currentText()!="<Время_начала>"){
-                        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"'AND az_lessons.Время_начала='"+person2.time->currentText()+"';")){
-                            getMessageBox("Таблица не открывается",true);
-                            return;
-                        }
-                    }
-                    else{
-                        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"';")){
-                            getMessageBox("Таблица не открывается",true);
-                            return;
-                        }
-                    }
-                }
-                else{
-                    if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+";")){
-                        getMessageBox("Таблица не открывается",true);
-                        return;
-                    }
-                }
-            }
-            else{
-                if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"';")){
-                    getMessageBox("Таблица не открывается",true);
-                    return;
-                }
-            }
-        }
-        else{
-            if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.discipline->currentText()+"';")){
-                getMessageBox("Таблица не открывается",true);
-                return;
-            }
-        }
-    }
-    else{
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL;")){
+    if(!q.exec("SELECT Название_номинации FROM lnr_nominations;")){
             getMessageBox("Таблица не открывается",true);
             return;
-        }
     }
+
     q.seek(intDeleteOrAdd);
-    QString telephone=q.value(0).toString();
-    QString date=q.value(5).toString();
-    if(!q.exec("UPDATE az_lessons SET Телефон_клиента='"+property("telephone").toString()+"' WHERE Телефон_репетитора='"+telephone+"' AND День='"+date+"';")){
+    int a;                                 //!!!
+    QString name_id=q.value(1).toString();
+    if(!q.exec("UPDATE lnr_competition SET Баллы='"+QString::number(a)+"' WHERE lnr_competition.Номинация='"+name_id+"';")){
         getMessageBox("Ошибка открытия таблицы занятий", true);
         return;
     }

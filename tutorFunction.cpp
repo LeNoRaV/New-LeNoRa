@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 void MainWindow::tutorProfile(QString telephone){
-    changeMenuBar({{"Добавить/удалить занятие"},{"Прошедшие занятия"},{"Другое","профиль жюри","настройки профиля репетитора","выйти"}});
+    changeMenuBar({{"Поставить баллы", "Мисс Бауман 2022"},{"Другое","профиль жюри","настройки профиля жюри","выйти"}});
     palette->setColor(QPalette::Window,Qt::lightGray);
     setPalette(*palette);
     setWindowTitle("Жюри");
@@ -11,28 +11,17 @@ void MainWindow::tutorProfile(QString telephone){
 }
 
 void MainWindow::changeInfoTutor(){
-    if(person.name->text()==nullptr ||person.password->text()==nullptr ||person.price->text()==nullptr){
+    if(person.name->text()==nullptr ||person.password->text()==nullptr){
         getMessageBox("Нельзя оставлять поля пустыми!",true);
         return;
     }
-    if(person.telephone->text().count()!=11){
-        getMessageBox("В номере телефона недостаточно цифр! Перепроверьте его.",true);
+    QFile file("C:/Users/lesko/Desktop/C++/DB3-jul/New-LeNoRa/files/jury.txt");
+    if(!file.open(QIODevice::WriteOnly)){
+        getMessageBox("Не открывается файл",true);
         return;
     }
-    QSqlQuery q(db);
-    if(!q.exec("UPDATE az_tutors SET Телефон='"+person.telephone->text()
-               +"', ФИО='"+person.name->text()
-               +"', Регион='"+person.region->currentText()
-               +"', Цена='"+person.price->text()
-               +"', Пароль='"+person.password->text()
-               +"' WHERE Телефон='"+property("telephone").toString()+"';")){
-        qDebug()<<q.lastError();
-        getMessageBox("На этот телефон уже зарегистрирован репетитор",true);
-        return;
-    }
-    setProperty("telephone",person.telephone->text());
-    setProperty("price",person.price->text());
-
+    QString str=person.login->text()+","+person.name->text()+","+person.password->text();
+    file.write(str.toUtf8());
 }
 
 static int intDeleteOrAdd;
@@ -47,17 +36,17 @@ void MainWindow::slotDeleteLesson(QPoint point){
 
 void MainWindow::slotDeleteLesson(){
     QSqlQuery q(db);
-    if(!q.exec("SELECT День FROM az_lessons WHERE Телефон_репетитора='"+property("telephone").toString()+"' AND Было_занятие=false;")){
+    if(!q.exec("SELECT lnr_nominations.\"ID\", lnr_competition.Баллы FROM lnr_nominations, lnr_competition WHERE lnr_competition.Номинация = lnr_nominations.\"ID\" AND lnr_competition.Участница = '"+property("record_book").toString()+"';")){
         getMessageBox("Не открылась таблица с занятиями",true);
         return;
     }
     q.seek(intDeleteOrAdd);
-    QString str=q.value(0).toString();
-    if(!q.exec("DELETE FROM az_lessons WHERE Телефон_репетитора='"+property("telephone").toString()+"' AND День='"+str+"';")){
+    int str=q.value(0).toInt();
+    if(!q.exec("DELETE FROM lnr_competition WHERE Участница='"+property("record_book").toString()+"' AND Номинация='"+QString::number(str)+"';")){
         getMessageBox("Не удалось удалить занятие",true);
         return;
     }
-    if(!q.exec("SELECT Цена,День,Время_начала,Телефон_клиента FROM az_lessons WHERE Телефон_репетитора='"+property("telephone").toString()+"' AND Было_занятие=false;")){
+    if(!q.exec("SELECT lnr_nominations.Название_номинации, lnr_competition.Баллы FROM lnr_nominations, lnr_competition WHERE lnr_competition.Номинация = lnr_nominations.\"ID\" AND lnr_competition.Участница = '"+property("record_book").toString()+"';")){
         getMessageBox("Не открылась таблица с занятиями",true);
         return;
     }
