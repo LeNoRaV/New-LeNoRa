@@ -1,0 +1,7 @@
+CREATE TABLE az_tutors(Телефон TEXT PRIMARY KEY NOT NULL, ФИО TEXT NOT NULL, Дисциплина TEXT NOT NULL, Регион TEXT NOT NULL, Цена INTEGER NOT NULL, Пароль  TEXT NOT NULL,FOREIGN KEY (Дисциплина) REFERENCES az_disciplines(Дисциплина) ON DELETE RESTRICT ON UPDATE RESTRICT,FOREIGN KEY (Регион) REFERENCES az_regions(Регион) ON DELETE RESTRICT ON UPDATE RESTRICT);
+CREATE TABLE az_clients(Телефон TEXT PRIMARY KEY NOT NULL, ФИО TEXT NOT NULL, Пароль TEXT NOT NULL);
+CREATE TABLE az_lessons(Телефон_репетитора TEXT NOT NULL, Цена INTEGER NOT NULL, День text NOT NULL, Время_начала text NOT NULL,Телефон_клиента TEXT, Было_занятие BOOL NOT NULL, PRIMARY KEY(Телефон_репетитора,День),FOREIGN KEY (Телефон_репетитора) REFERENCES az_tutors(Телефон) ON DELETE SET NULL ON UPDATE CASCADE,FOREIGN KEY (Телефон_клиента) REFERENCES az_clients(Телефон) ON DELETE SET NULL ON UPDATE CASCADE);
+CREATE TABLE az_reg_tutors(Телефон TEXT PRIMARY KEY NOT NULL, ФИО TEXT NOT NULL, Дисциплина TEXT NOT NULL, Регион TEXT NOT NULL, Цена INTEGER NOT NULL, Пароль  TEXT NOT NULL,FOREIGN KEY (Дисциплина) REFERENCES az_disciplines(Дисциплина) ON DELETE RESTRICT ON UPDATE RESTRICT,FOREIGN KEY (Регион) REFERENCES az_regions(Регион) ON DELETE RESTRICT ON UPDATE RESTRICT);
+CREATE TABLE az_disciplines(Дисциплина TEXT PRIMARY KEY NOT NULL);
+CREATE TABLE az_regions(Регион TEXT PRIMARY KEY NOT NULL);
+

@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/MyPictures">
+        <file>pictures/enter.png</file>
+        <file>pictures/mainIcon.jpg</file>
+        <file>pictures/mainPicture.jfif</file>
+        <file>pictures/client.png</file>
+        <file>pictures/tutor.png</file>
+    </qresource>
+    <qresource prefix="/MyFiles">
+        <file>files/fileWithSQLCommands.txt</file>
+    </qresource>
+</RCC>
