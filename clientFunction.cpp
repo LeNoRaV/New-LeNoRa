@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 
-void MainWindow::clientProfile(QString telephone){
-    changeMenuBar({{"Занятия","выбрать занятие","выбранные занятия","прошедшие занятия"},{"Другое","профиль клиента","настройки профиля клиента","выйти"}});
+void MainWindow::clientProfile(QString record_book){
+    changeMenuBar({{"Занятия","выбрать занятие","выбранные занятия","прошедшие занятия"},{"Другое","профиль клиента","настройки профиля участницы","выйти"}});
     palette->setColor(QPalette::Window,Qt::lightGray);
     setPalette(*palette);
-    setWindowTitle("Клиент");
-    setProperty("telephone",telephone);
-    QAction* act=new QAction("профиль клиента");
+    setWindowTitle("Участница конкурса красоты");
+    setProperty("record_book",record_book);
+    QAction* act=new QAction("профиль участницы");
     emit menuBar->triggered(act);
 }
 

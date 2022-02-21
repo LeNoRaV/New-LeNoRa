@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 
 void MainWindow::tutorProfile(QString telephone){
-    changeMenuBar({{"Добавить/удалить занятие"},{"Прошедшие занятия"},{"Другое","профиль репетитора","настройки профиля репетитора","выйти"}});
+    changeMenuBar({{"Добавить/удалить занятие"},{"Прошедшие занятия"},{"Другое","профиль жюри","настройки профиля репетитора","выйти"}});
     palette->setColor(QPalette::Window,Qt::lightGray);
     setPalette(*palette);
-    setWindowTitle("Репетитор");
+    setWindowTitle("Жюри");
     setProperty("telephone",telephone);
-    QAction* act=new QAction("профиль репетитора");
+    QAction* act=new QAction("профиль жюри");
     emit menuBar->triggered(act);
 }
 

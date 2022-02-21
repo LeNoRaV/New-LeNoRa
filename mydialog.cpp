@@ -17,8 +17,6 @@ MyDialogEnter::MyDialogEnter(QSqlDatabase* db1, QString* result1,QWidget *parent
     setWindowTitle("Вход");
     setWindowIcon(QIcon(":/MyPictures/pictures/enter.png"));
     login=new QLineEdit(this);
-//    QRegularExpression regExp("[1-9]{1}[0-9]{10}");
-//    login->setValidator(new QRegularExpressionValidator(regExp,this));
     login->setPlaceholderText("Логин");
     password=new QLineEdit(this);
     password->setPlaceholderText("Пароль");
@@ -30,9 +28,6 @@ MyDialogEnter::MyDialogEnter(QSqlDatabase* db1, QString* result1,QWidget *parent
     QAction* client=new QAction(tr("&Мисс Бауман 2022"));
     client->setIcon(QIcon(":/MyPictures/pictures/client.png"));
     menu->addAction(client);
-//    QAction* tutor=new QAction(tr("&репетитора"));
-//    tutor->setIcon(QIcon(":/MyPictures/pictures/tutor.png"));
-//    menu->addAction(tutor);
     menuBar->addMenu(menu);
 
     QLabel* label=new QLabel("Войти как",this);
@@ -63,7 +58,7 @@ MyDialogEnter::MyDialogEnter(QSqlDatabase* db1, QString* result1,QWidget *parent
 
 void MyDialogEnter::slotEnter(){
     if(box->currentText()=="Администратор"){
-        QFile file("C:/Users/lesko/Desktop/C++/DB3-jul/lr3/files/admin.txt");
+        QFile file("C:/Users/lesko/Desktop/C++/DB3-jul/New-LeNoRa/files/admin.txt");
         if(!file.open(QIODevice::ReadOnly)){
             getMessageBox("Вы не можете войти как администратор с этого устройства",true);
             return;
@@ -78,20 +73,19 @@ void MyDialogEnter::slotEnter(){
         else getMessageBox("Ошибка входа: проверьте правильность логина и пароля",true);
     }
     if(box->currentText()=="Жюри"){
-        QSqlQuery query(*db);
-        if(!query.exec("SELECT Телефон,Пароль FROM az_tutors;")){ //!!!
-           getMessageBox("Таблица с жюри не открывается",true);
-           return;
+        QFile file("C:/Users/lesko/Desktop/C++/DB3-jul/New-LeNoRa/files/jury.txt");
+        if(!file.open(QIODevice::ReadOnly)){
+            getMessageBox("Вы не можете войти как жюри с этого устройства",true);
+            return;
         }
-        query.first();
-        do{
-            if(query.value(0).toString()==login->text() && query.value(1).toString()==password->text()){
-                (*result)="жюри,"+login->text();
-                close();
-                return;
-            }
-        }while(query.next());
-        getMessageBox("Ошибка входа: проверьте правильность логина и пароля",true);
+        QString str=file.readAll();
+        file.close();
+        qDebug()<<str;
+        if(login->text()==str.section(",",0,0) || password->text()==str.section(",",2,2)){
+            (*result)="жюри";
+            close();
+        }
+        else getMessageBox("Ошибка входа: проверьте правильность логина и пароля",true);
     }
     if(box->currentText()=="Участница"){
         QSqlQuery query(*db);
@@ -115,10 +109,6 @@ void MyDialogEnter::slotTriggeredMenuBar(QAction* action){
         MyDialogRegistration* dialogRegistration=new MyDialogRegistration(db);
         dialogRegistration->exec();
     }
-//    if(action->text()==tr("&репетитора")){
-//        MyDialogRegistration* dialogRegistration=new MyDialogRegistration(db,false);
-//        dialogRegistration->exec();
-//    }
 }
 
 void MyDialogRegistration::getMessageBox(const QString textError,bool error){
@@ -148,44 +138,6 @@ MyDialogRegistration::MyDialogRegistration(QSqlDatabase* db1, QWidget *parent) :
     layoutLineEdit->addWidget(record_book);
 
     QPushButton* enter=new QPushButton("Регистрация");
-//    if(isClient){
-//        setWindowTitle("Регистрация");
-//        setWindowIcon(QIcon(":/MyPictures/pictures/client.png"));
-//        enter=new QPushButton("&Регистрироваться",this);
-//    }
-//    else{
-//        setWindowIcon(QIcon(":/MyPictures/pictures/tutor.png"));
-//        setWindowTitle("Оставить заявку");
-//        enter=new QPushButton("&Оставить заявку",this);
-//        discipline=new QComboBox(this);
-//        QSqlQuery query(*db);
-//        if(!query.exec("SELECT * FROM az_disciplines;")){
-//            getMessageBox("Таблица с дисциплинами не открывается",true);
-//            return;
-//         }
-//        do{
-//            QString str=query.value(0).toString();
-//            discipline->addItem(str);
-//        }while(query.next());
-//        discipline->setItemText(0,"<Предмет>");
-//        region=new QComboBox(this);
-//        if(!query.exec("SELECT * FROM az_regions;")){
-//            getMessageBox("Таблица с регионами не открывается",true);
-//            return;
-//         }
-//        do{
-//            QString str=query.value(0).toString();
-//            region->addItem(str);
-//        }while(query.next());
-//        region->setItemText(0,"<Регион>");
-//        price=new QLineEdit(this);
-//        QRegularExpression regExp("[1-9]{1}[0-9]{3}");
-//        price->setValidator(new QRegularExpressionValidator(regExp,this));
-//        price->setPlaceholderText("Цена");
-//        layoutLineEdit->addWidget(discipline);
-//        layoutLineEdit->addWidget(region);
-//        layoutLineEdit->addWidget(price);
-//    }
 
     weight=new QLineEdit(this);
     weight->setPlaceholderText("Вес");
@@ -230,24 +182,5 @@ void MyDialogRegistration::slotEnter(){
             return;
         }
         getMessageBox("Регистрация прошла успешно.",false);
-
-//        if(discipline->currentText()=="<Предмет>"){
-//                getMessageBox("Ошибка в выборе предмета: он не выбран",true);
-//                return;
-//        }
-//        if(region->currentText()=="<Регион>") {
-//            getMessageBox("Ошибка в выборе региона: он не выбран",true);
-//            return;
-//        }
-//        if(name->text()==nullptr || password->text()==nullptr || price->text()==nullptr) {
-//            getMessageBox("Ошибка ввода данных: не все поля заполнены",true);
-//            return;
-//        }
-//        if(!query.exec("INSERT INTO az_reg_tutors VALUES ('"+telephone->text()+"','"+name->text()+"','"+discipline->currentText()+"','"+region->currentText()+"','"+price->text()+"','"+password->text()+"');")) {
-//            getMessageBox("Ошибка в номере телефона: этот телефон уже зарегистрирован",true);
-//            return;
-//        }
-//        getMessageBox("Поздравляем! Вы оставили заявку на рассмотрение. Пожалуйста, дождитесь ответа от администратора.",false);
-//    }
     close();
 }
