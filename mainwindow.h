@@ -19,8 +19,6 @@ struct Person{
 };
 
 struct Person2{
-    QComboBox* region;
-    QComboBox* price;
     QComboBox* nominations;
     QComboBox* date;
     QComboBox* time;
@@ -42,8 +40,6 @@ private:
     Person2 person2;
     QPalette* palette;
 
-//    QLabel* label;
-//    QLabel* infoLabel;
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -58,28 +54,14 @@ public:
 private slots:
     void slotTriggeredMenuBar(QAction*);
 
-//    void slotPlusAndDeleteTutor(QPoint);
-//    void slotAddTutor();
-//    void slotDeleteTutor();
-
-//    void slotAddAllTutors();
-//    void slotDeleteAllTutors();
-
     void slotDeleteDiscipline(QPoint);
     void slotAddDiscipline();
     void slotDeleteDiscipline();
 
-//    void slotAddScore();
-
-//    void slotDeleteRegion(QPoint);
-//    void slotAddRegion();
-//    void slotDeleteRegion();
+    void slotAddScore();
 
     void slotDeleteTutor2(QPoint);
     void slotDeleteTutor2();
-
-//    void slotDeleteClient(QPoint);
-//    void slotDeleteClient();
 
     void changeInfoAdmin();
 
@@ -92,15 +74,6 @@ private slots:
     void slotAddLesson();
 
     void changeInfoClient();
-
-//    void slotChangeLesson(QPoint);
-//    void slotChangeLesson();
-
-//    void currentTextChanged1(const QString);
-//    void currentTextChanged2(const QString);
-//    void currentTextChanged3(const QString);
-//    void currentTextChanged4(const QString);
-//    void currentTextChanged5(const QString);
 
     void slotChooseDiscipline(QPoint);
     void slotChooseDiscipline();

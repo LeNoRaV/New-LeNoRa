@@ -172,11 +172,12 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QFont font1;
         font1.setPixelSize(20);
         QFont font2;
-        font2.setUnderline(true);
+        font2.setItalic(true);
         font2.setPixelSize(30);
         QFont font3(font1);
         font3.setBold(true);
         QFont font4(font2);
+        font4.setItalic(true);
         font4.setBold(true);
 
         QLabel* admin=new QLabel("Администратор");
@@ -194,23 +195,23 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         query1.first();
         int tutors=query1.value(0).toInt();
 
-        if(!query1.exec("SELECT lnr_participants.Номер_зачётки, lnr_participants.ФИО FROM lnr_participants, lnr_competition WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница LIMIT 3;")){
+        if(!query1.exec("SELECT Номер_зачётки, ФИО, Общие_баллы FROM lnr_participants ORDER BY Общие_баллы DESC;")){
             getMessageBox("Не открылась таблица с участницами",true);
             return;
         }
-        if(!query1.exec("SELECT COUNT(lnr_competition.Баллы) FROM lnr_participants, lnr_competition WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница LIMIT 3;")){
-            getMessageBox("Не открылась таблица с соревнованием",true);
-            return;
-        }
-//        query1.first();
-//        do{
-//            profit+=0.3*(query1.value(0).toInt());
-//        }while(query1.next());
+        query1.first();
+        QString winers1=query1.value(0).toString();
+        query1.next();
+        QString winers2=query1.value(0).toString();
+        query1.next();
+        QString winers3=query1.value(0).toString();
 
-        QLabel* statistics=new QLabel("Основная статистика");
+        QLabel* statistics=new QLabel("Промежуточные результаты");
         statistics->setFont(font2);
-        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString::number(tutors)+"\n2 место: "+QString::number(tutors)+"\n3 место: "+QString::number(tutors),this);
+        statistics->setStyleSheet("color: rgb(255, 255, 255)");
+        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
         stat->setFont(font1);
+        stat->setStyleSheet("color: rgb(255, 255, 255)");
 
         QVBoxLayout* layout1=new QVBoxLayout();
         layout1->addWidget(admin);
@@ -282,11 +283,12 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QFont font1;
         font1.setPixelSize(20);
         QFont font2;
-        font2.setUnderline(true);
+        font2.setItalic(true);
         font2.setPixelSize(30);
         QFont font3(font1);
         font3.setBold(true);
         QFont font4(font2);
+        font4.setItalic(true);
         font4.setBold(true);
 
         QSqlQuery q(db);
@@ -339,11 +341,13 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         score3=query1.value(1).toString();
 
 
-        QLabel* statistics=new QLabel("Основная статистика");
+        QLabel* statistics=new QLabel("Мои номинации");
         statistics->setFont(font2);
+        statistics->setStyleSheet("color: rgb(255, 255, 255)");
         QLabel* stat=new QLabel("1) "+QString(nomin1)+"   "+QString(score1)+"\n2) "+QString(nomin2)+"   "+QString(score2)+
                                 "\n3) "+QString(nomin3)+"   "+QString(score3),this);
         stat->setFont(font1);
+        stat->setStyleSheet("color: rgb(255, 255, 255)");
 
         QVBoxLayout* layout1=new QVBoxLayout();
         layout1->addWidget(admin);
@@ -417,18 +421,11 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         tableView->setContextMenuPolicy(Qt::CustomContextMenu);
         connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotDeleteLesson(QPoint)));
 
-        QPushButton* add=new QPushButton("&Добавить",this);
+        QPushButton* add=new QPushButton("&Добавить номинацию",this);
         lineEdit=new QLineEdit(this);
-        lineEdit->setPlaceholderText("Введите дату(ДД.MM.ГГГГ)");
-        QRegularExpression regExp("[0-9]{2}[.][0-9]{2}[.][0-9]{4}");
-        lineEdit->setValidator(new QRegularExpressionValidator(regExp,this));
-        lineEdit2=new QLineEdit(this);
-        lineEdit2->setPlaceholderText("Введите время(ЧЧ:MM)");
-        QRegularExpression regExp1("[0-2]{1}[0-9]{1}:[0-9]{2}");
-        lineEdit2->setValidator(new QRegularExpressionValidator(regExp1,this));
+        lineEdit->setPlaceholderText("id номинации");
         QVBoxLayout* layout1=new QVBoxLayout();
         layout1->addWidget(lineEdit);
-        layout1->addWidget(lineEdit2);
         layout1->addWidget(add);
         layout1->addStretch(1);
         QHBoxLayout* layout2=new QHBoxLayout();
@@ -439,18 +436,6 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         setCentralWidget(widget);
 
         connect(add,SIGNAL(pressed()),this,SLOT(slotAddLesson()));
-    }
-    if(action->text()==tr("Прошедшие занятия")){
-        QSqlQuery query(db);
-        if(!query.exec("SELECT Цена,День,Время_начала,Телефон_клиента FROM az_lessons WHERE Телефон_репетитора='"+property("telephone").toString()+"' AND Было_занятие=true;")){
-            getMessageBox("Не удалось открыть таблицу занятий",true);
-        }
-        delete centralWidget();
-        tableView=new QTableView();
-        tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        model->setQuery(query);
-        tableView->setModel(model);
-        setCentralWidget(tableView);
     }
 
 
@@ -467,11 +452,12 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QFont font1;
         font1.setPixelSize(20);
         QFont font2;
-        font2.setUnderline(true);
+        font2.setItalic(true);
         font2.setPixelSize(30);
         QFont font3(font1);
         font3.setBold(true);
         QFont font4(font2);
+        font4.setItalic(true);
         font4.setBold(true);
 
         QLabel* admin=new QLabel("Жюри");
@@ -489,19 +475,24 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         query1.first();
         int tutors=query1.value(0).toInt();
 
-        if(!query1.exec("SELECT lnr_participants.Номер_зачётки, lnr_participants.ФИО FROM lnr_participants, lnr_competition WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница LIMIT 3;")){
+        if(!query1.exec("SELECT Номер_зачётки, ФИО, Общие_баллы FROM lnr_participants ORDER BY Общие_баллы DESC;")){
             getMessageBox("Не открылась таблица с участницами",true);
             return;
         }
-        if(!query1.exec("SELECT COUNT(lnr_competition.Баллы) FROM lnr_participants, lnr_competition WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница LIMIT 3;")){
-            getMessageBox("Не открылась таблица с соревнованием",true);
-            return;
-        }
+        query1.first();
+        QString winers1=query1.value(0).toString();
+        query1.next();
+        QString winers2=query1.value(0).toString();
+        query1.next();
+        QString winers3=query1.value(0).toString();
 
-        QLabel* statistics=new QLabel("Основная статистика");
+        QLabel* statistics=new QLabel("Промежуточные результаты");
         statistics->setFont(font2);
-        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString::number(tutors)+"\n2 место: "+QString::number(tutors)+"\n3 место: "+QString::number(tutors),this);
+        statistics->setStyleSheet("color: rgb(255, 255, 255)");
+
+        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
         stat->setFont(font1);
+        stat->setStyleSheet("color: rgb(255, 255, 255)");
 
         QVBoxLayout* layout1=new QVBoxLayout();
         layout1->addWidget(admin);
@@ -563,24 +554,16 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         tableView->setContextMenuPolicy(Qt::CustomContextMenu);
         connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotChooseDiscipline(QPoint)));  //!!!
 
-        person2.nominations=new QComboBox(this);
-                person2.nominations->addItem("<Номинация>");
-                q.first();
-                QStringList list;
-                do{
-                    list<<q.value(2).toString();
-                }while(q.next());
-                list.removeDuplicates();
-                for(auto a:list){
-                    person2.nominations->addItem(a);
-                }
+//
                 QVBoxLayout* layout=new QVBoxLayout();
                 layout->addWidget(tableView);
-                layout->addWidget(person2.nominations);
                 QWidget* w=new QWidget(this);
                 w->setLayout(layout);
                 setCentralWidget(w);
-//                connect(person2.nominations,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged1(const QString)));
+
+//
     }
 }
+
+
 

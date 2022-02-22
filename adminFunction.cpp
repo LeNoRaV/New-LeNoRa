@@ -3,7 +3,7 @@
 void MainWindow::adminProfile(){
     changeMenuBar({{"Добавить/удалить","удалить участницу","добавить или удалить номинацию"},{"Другое", "топ","профиль администратора","настройки профиля администратора","выйти"}});
 
-    palette->setColor(QPalette::Window,Qt::lightGray);
+    palette->setColor(QPalette::Window,Qt::darkGray);
     setPalette(*palette);
     setWindowTitle("Администратор");
     QAction* act=new QAction("профиль администратора");
@@ -114,7 +114,7 @@ void MainWindow::slotStatistics(int numberSort){
         tableView->reset();
     }
     if(numberSort==1){
-        if(!q.exec("SELECT lnr_nominations.Название_номинации, lnr_participants.Номер_зачётки, lnr_participants.ФИО, lnr_competition.Баллы  FROM lnr_nominations, lnr_participants, lnr_competition WHERE lnr_competition.Баллы = (SELECT MAX(lnr_competition.Баллы) FROM lnr_competition,lnr_participants WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница AND lnr_nominations.\"ID\" = lnr_competition.Номинация) And lnr_participants.Номер_зачётки = lnr_competition.Участница")){
+        if(!q.exec("SELECT DISTINCT lnr_nominations.Название_номинации, lnr_participants.Номер_зачётки, lnr_participants.ФИО, lnr_competition.Баллы  FROM lnr_nominations, lnr_participants, lnr_competition WHERE lnr_competition.Баллы = (SELECT MAX(lnr_competition.Баллы) FROM lnr_competition,lnr_participants WHERE lnr_participants.Номер_зачётки = lnr_competition.Участница AND lnr_nominations.\"ID\" = lnr_competition.Номинация) And lnr_participants.Номер_зачётки = lnr_competition.Участница")){
             qDebug()<<q.lastError();
                 getMessageBox("Не открылась таблица с номинациями",true);
                 return;
