@@ -73,3 +73,21 @@ void MainWindow::slotAddLesson(){
     model->setQuery(q);
     tableView->reset();
 }
+
+//void MainWindow::slotAddScore(){
+//    QSqlQuery q(db);
+//    if(lineEdit->text()==nullptr){
+//        getMessageBox("Введите название номинации",true);
+//        return;
+//    }
+//    if(!q.exec("INSERT INTO lnr_nominations VALUES ('"+lineEdit->text()+"');")){
+//        getMessageBox("Не удаётся добавить номинацию",true);
+//        return;
+//    }
+//    if(!q.exec("SELECT * FROM lnr_nominations;")){
+//        getMessageBox("Не открылась таблица с номинациями",true);
+//        return;
+//    }
+//    model->setQuery(q);
+//    tableView->reset();
+//}

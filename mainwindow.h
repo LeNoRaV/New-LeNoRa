@@ -69,6 +69,8 @@ private slots:
     void slotAddDiscipline();
     void slotDeleteDiscipline();
 
+//    void slotAddScore();
+
 //    void slotDeleteRegion(QPoint);
 //    void slotAddRegion();
 //    void slotDeleteRegion();
@@ -91,14 +93,14 @@ private slots:
 
     void changeInfoClient();
 
-    void slotChangeLesson(QPoint);
-    void slotChangeLesson();
+//    void slotChangeLesson(QPoint);
+//    void slotChangeLesson();
 
-    void currentTextChanged1(const QString);
-    void currentTextChanged2(const QString);
-    void currentTextChanged3(const QString);
-    void currentTextChanged4(const QString);
-    void currentTextChanged5(const QString);
+//    void currentTextChanged1(const QString);
+//    void currentTextChanged2(const QString);
+//    void currentTextChanged3(const QString);
+//    void currentTextChanged4(const QString);
+//    void currentTextChanged5(const QString);
 
     void slotChooseDiscipline(QPoint);
     void slotChooseDiscipline();

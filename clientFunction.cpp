@@ -88,179 +88,179 @@ static int intDeleteOrAdd;
 //    }
 //}
 
-void MainWindow::currentTextChanged1(const QString str){
-    if(str!="<Дисциплина>"){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+str+"';")){
-            getMessageBox("Таблица не открывается",true);
-            return;
-         }
-        model->setQuery(q);
-        tableView->reset();
+//void MainWindow::currentTextChanged1(const QString str){
+//    if(str!="<Дисциплина>"){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+str+"';")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//         }
+//        model->setQuery(q);
+//        tableView->reset();
 
-        person2.region=new QComboBox(this);
-        person2.region->addItem("<Регион>");
-        q.first();
-        QStringList list;
-        do{
-            list<<q.value(3).toString();
-        }while(q.next());
-        list.removeDuplicates();
-        for(auto a:list){
-            person2.region->addItem(a);
-        }
+//        person2.region=new QComboBox(this);
+//        person2.region->addItem("<Регион>");
+//        q.first();
+//        QStringList list;
+//        do{
+//            list<<q.value(3).toString();
+//        }while(q.next());
+//        list.removeDuplicates();
+//        for(auto a:list){
+//            person2.region->addItem(a);
+//        }
 
-        QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.nominations);
-        lay->addWidget(person2.region);
-        QVBoxLayout* layout=new QVBoxLayout();
-        layout->addWidget(tableView);
-        layout->addLayout(lay);
-        QWidget* w=new QWidget(this);
-        w->setLayout(layout);
-        setCentralWidget(w);
-        connect(person2.region,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged2(const QString)));
-    }
-    else{
-        QAction* act=new QAction(tr("выбрать занятие"),this);
-        emit menuBar->triggered(act);
-    }
-}
+//        QHBoxLayout* lay=new QHBoxLayout();
+//        lay->addWidget(person2.nominations);
+//        lay->addWidget(person2.region);
+//        QVBoxLayout* layout=new QVBoxLayout();
+//        layout->addWidget(tableView);
+//        layout->addLayout(lay);
+//        QWidget* w=new QWidget(this);
+//        w->setLayout(layout);
+//        setCentralWidget(w);
+//        connect(person2.region,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged2(const QString)));
+//    }
+//    else{
+//        QAction* act=new QAction(tr("выбрать занятие"),this);
+//        emit menuBar->triggered(act);
+//    }
+//}
 
-void MainWindow::currentTextChanged2(const QString str){
-    if(str!="<Регион>"){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+str+"';")){
-            getMessageBox("Таблица не открывается",true);
-            return;
-         }
-        model->setQuery(q);
-        tableView->reset();
+//void MainWindow::currentTextChanged2(const QString str){
+//    if(str!="<Регион>"){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+str+"';")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//         }
+//        model->setQuery(q);
+//        tableView->reset();
 
-        person2.price=new QComboBox(this);
-        person2.price->addItem("<Цена>");
-        q.first();
-        QStringList list;
-        do{
-            list<<q.value(4).toString();
-        }while(q.next());
-        list.removeDuplicates();
-        for(auto a:list){
-            person2.price->addItem(a);
-        }
+//        person2.price=new QComboBox(this);
+//        person2.price->addItem("<Цена>");
+//        q.first();
+//        QStringList list;
+//        do{
+//            list<<q.value(4).toString();
+//        }while(q.next());
+//        list.removeDuplicates();
+//        for(auto a:list){
+//            person2.price->addItem(a);
+//        }
 
-        QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.nominations);
-        lay->addWidget(person2.region);
-        lay->addWidget(person2.price);
-        QVBoxLayout* layout=new QVBoxLayout();
-        layout->addWidget(tableView);
-        layout->addLayout(lay);
-        QWidget* w=new QWidget(this);
-        w->setLayout(layout);
-        setCentralWidget(w);
-        connect(person2.price,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged3(const QString)));
-    }
-    else{
-        emit currentTextChanged1(person2.nominations->currentText());
-    }
-}
+//        QHBoxLayout* lay=new QHBoxLayout();
+//        lay->addWidget(person2.nominations);
+//        lay->addWidget(person2.region);
+//        lay->addWidget(person2.price);
+//        QVBoxLayout* layout=new QVBoxLayout();
+//        layout->addWidget(tableView);
+//        layout->addLayout(lay);
+//        QWidget* w=new QWidget(this);
+//        w->setLayout(layout);
+//        setCentralWidget(w);
+//        connect(person2.price,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged3(const QString)));
+//    }
+//    else{
+//        emit currentTextChanged1(person2.nominations->currentText());
+//    }
+//}
 
-void MainWindow::currentTextChanged3(const QString str){
-    if(str!="<Цена>"){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+str+";")){
-            getMessageBox("Таблица не открывается",true);
-            return;
-        }
-        model->setQuery(q);
-        tableView->reset();
+//void MainWindow::currentTextChanged3(const QString str){
+//    if(str!="<Цена>"){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+str+";")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//        }
+//        model->setQuery(q);
+//        tableView->reset();
 
-        person2.date=new QComboBox(this);
-        person2.date->addItem("<Дата>");
-        q.first();
-        QStringList list;
-        do{
-            list<<q.value(5).toString();
-        }while(q.next());
-        list.removeDuplicates();
-        for(auto a:list){
-            person2.date->addItem(a);
-        }
+//        person2.date=new QComboBox(this);
+//        person2.date->addItem("<Дата>");
+//        q.first();
+//        QStringList list;
+//        do{
+//            list<<q.value(5).toString();
+//        }while(q.next());
+//        list.removeDuplicates();
+//        for(auto a:list){
+//            person2.date->addItem(a);
+//        }
 
-        QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.nominations);
-        lay->addWidget(person2.region);
-        lay->addWidget(person2.price);
-        lay->addWidget(person2.date);
-        QVBoxLayout* layout=new QVBoxLayout();
-        layout->addWidget(tableView);
-        layout->addLayout(lay);
-        QWidget* w=new QWidget(this);
-        w->setLayout(layout);
-        setCentralWidget(w);
-        connect(person2.date,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged4(const QString)));
-    }
-    else{
-        emit currentTextChanged2(person2.region->currentText());
-    }
-}
+//        QHBoxLayout* lay=new QHBoxLayout();
+//        lay->addWidget(person2.nominations);
+//        lay->addWidget(person2.region);
+//        lay->addWidget(person2.price);
+//        lay->addWidget(person2.date);
+//        QVBoxLayout* layout=new QVBoxLayout();
+//        layout->addWidget(tableView);
+//        layout->addLayout(lay);
+//        QWidget* w=new QWidget(this);
+//        w->setLayout(layout);
+//        setCentralWidget(w);
+//        connect(person2.date,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged4(const QString)));
+//    }
+//    else{
+//        emit currentTextChanged2(person2.region->currentText());
+//    }
+//}
 
-void MainWindow::currentTextChanged4(const QString str){
-    if(str!="<Дата>"){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+str+"';")){
-            getMessageBox("Таблица не открывается",true);
-            return;
-         }
-        model->setQuery(q);
-        tableView->reset();
+//void MainWindow::currentTextChanged4(const QString str){
+//    if(str!="<Дата>"){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+str+"';")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//         }
+//        model->setQuery(q);
+//        tableView->reset();
 
-        person2.time=new QComboBox(this);
-        person2.time->addItem("<Время_начала>");
-        q.first();
-        QStringList list;
-        do{
-            list<<q.value(6).toString();
-        }while(q.next());
-        list.removeDuplicates();
-        for(auto a:list){
-            person2.time->addItem(a);
-        }
+//        person2.time=new QComboBox(this);
+//        person2.time->addItem("<Время_начала>");
+//        q.first();
+//        QStringList list;
+//        do{
+//            list<<q.value(6).toString();
+//        }while(q.next());
+//        list.removeDuplicates();
+//        for(auto a:list){
+//            person2.time->addItem(a);
+//        }
 
-        QHBoxLayout* lay=new QHBoxLayout();
-        lay->addWidget(person2.nominations);
-        lay->addWidget(person2.region);
-        lay->addWidget(person2.price);
-        lay->addWidget(person2.date);
-        lay->addWidget(person2.time);
-        QVBoxLayout* layout=new QVBoxLayout();
-        layout->addWidget(tableView);
-        layout->addLayout(lay);
-        QWidget* w=new QWidget(this);
-        w->setLayout(layout);
-        setCentralWidget(w);
-        connect(person2.time,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged5(const QString)));
-    }
-    else{
-        emit currentTextChanged3(person2.price->currentText());
-    }
-}
+//        QHBoxLayout* lay=new QHBoxLayout();
+//        lay->addWidget(person2.nominations);
+//        lay->addWidget(person2.region);
+//        lay->addWidget(person2.price);
+//        lay->addWidget(person2.date);
+//        lay->addWidget(person2.time);
+//        QVBoxLayout* layout=new QVBoxLayout();
+//        layout->addWidget(tableView);
+//        layout->addLayout(lay);
+//        QWidget* w=new QWidget(this);
+//        w->setLayout(layout);
+//        setCentralWidget(w);
+//        connect(person2.time,SIGNAL(currentTextChanged(const QString)),SLOT(currentTextChanged5(const QString)));
+//    }
+//    else{
+//        emit currentTextChanged3(person2.price->currentText());
+//    }
+//}
 
-void MainWindow::currentTextChanged5(const QString str){
-    if(str!="<Время_начала>"){
-        QSqlQuery q(db);
-        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"'AND az_lessons.Время_начала='"+str+"';")){
-            getMessageBox("Таблица не открывается",true);
-            return;
-         }
-        model->setQuery(q);
-        tableView->reset();
-    }
-    else{
-        emit currentTextChanged4(person2.date->currentText());
-    }
-}
+//void MainWindow::currentTextChanged5(const QString str){
+//    if(str!="<Время_начала>"){
+//        QSqlQuery q(db);
+//        if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL AND az_tutors.Дисциплина='"+person2.nominations->currentText()+"' AND az_tutors.Регион='"+person2.region->currentText()+"' AND az_lessons.Цена="+person2.price->currentText()+"AND az_lessons.День='"+person2.date->currentText()+"'AND az_lessons.Время_начала='"+str+"';")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//         }
+//        model->setQuery(q);
+//        tableView->reset();
+//    }
+//    else{
+//        emit currentTextChanged4(person2.date->currentText());
+//    }
+//}
 
 void MainWindow::slotChooseDiscipline(QPoint point){
     intDeleteOrAdd=tableView->indexAt(point).row();
@@ -273,19 +273,21 @@ void MainWindow::slotChooseDiscipline(QPoint point){
 
 void MainWindow::slotChooseDiscipline(){
     QSqlQuery q(db);
-    if(!q.exec("SELECT Название_номинации FROM lnr_nominations;")){
+    q.seek(intDeleteOrAdd);
+    QString name=q.value(0).toString();
+
+    if(!q.exec("SELECT lnr_nominations.Название_номинации, lnr_participants.Номер_зачётки, lnr_participants.ФИО, lnr_competition.Баллы FROM lnr_competition, lnr_nominations, lnr_participants WHERE lnr_nominations.Название_номинации = '"+ QString(name) +"' AND lnr_nominations.\"ID\" = lnr_competition.Номинация AND lnr_participants.Номер_зачётки = lnr_competition.Участница ;")){
             getMessageBox("Таблица не открывается",true);
             return;
     }
 
-    q.seek(intDeleteOrAdd);
-    int a;                                 //!!!
+    int a=0;                                 //!!!
     QString name_id=q.value(1).toString();
     if(!q.exec("UPDATE lnr_competition SET Баллы='"+QString::number(a)+"' WHERE lnr_competition.Номинация='"+name_id+"';")){
-        getMessageBox("Ошибка открытия таблицы занятий", true);
+        getMessageBox("Ошибка открытия таблицы соревнования 888888", true);
         return;
     }
-    if(!q.exec("SELECT az_lessons.Телефон_репетитора,az_tutors.ФИО,az_tutors.Дисциплина,az_tutors.Регион,az_lessons.Цена,az_lessons.День,az_lessons.Время_начала FROM az_lessons INNER JOIN az_tutors ON az_lessons.Телефон_репетитора=az_tutors.Телефон WHERE az_lessons.Телефон_клиента is NULL;")){
+    if(!q.exec("SELECT lnr_nominations.Название_номинации, lnr_participants.Номер_зачётки, lnr_participants.ФИО, lnr_competition.Баллы FROM lnr_competition, lnr_nominations, lnr_participants WHERE lnr_nominations.Название_номинации = '"+ QString(name) +"' AND lnr_nominations.\"ID\" = lnr_competition.Номинация AND lnr_participants.Номер_зачётки = lnr_competition.Участница ;")){
         getMessageBox("Ошибка открытия таблиц", true);
         return;
     }

@@ -1,6 +1,74 @@
 #include "mydialog.h"
 #include <QLayout>
 
+void MyDialogScore::getMessageBox(const QString textError,bool error){
+    QMessageBox msgBox;
+    if(error) msgBox.setIcon(QMessageBox::Critical);
+    else msgBox.setIcon(QMessageBox::Information);
+    msgBox.setText(textError);
+    msgBox.exec();
+}
+
+MyDialogScore::MyDialogScore(QSqlDatabase* db1, QString* result1,QWidget *parent) : QDialog(parent)
+{
+    result=result1;
+    db=db1;
+    setModal(true);
+    setWindowTitle("Ввод баллов");
+    setWindowIcon(QIcon(":/MyPictures/pictures/enter.png"));
+
+    score=new QLineEdit(this);
+    score->setPlaceholderText("Баллы");
+    QPushButton* enter=new QPushButton("&Подтвердить",this);
+
+    QHBoxLayout* layout1=new QHBoxLayout();
+    layout1->addWidget(score);
+    layout1->addWidget(enter);
+    setLayout(layout1);
+
+    connect(enter,SIGNAL(pressed()),this,SLOT(slotEnter()));
+    show();
+}
+
+void MyDialogScore::slotEnter(){
+//    QSqlQuery query(*db);
+//    if(!q.exec("SELECT * FROM lnr_competition;")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//    }
+
+//        if(name->text()==nullptr || password->text()==nullptr || record_book->text()==nullptr) {
+//            getMessageBox("Ошибка ввода данных: не все обязательные (*) поля заполнены",true);
+//            return;
+//        }
+//        if(!query.exec("INSERT INTO lnr_participants VALUES ('"+record_book->text()+"','"+name->text()+"','"+weight->text()+"','"+height->text()+"','"+age->text()+"','"+talant->text()+"','"+password->text()+"');")) {
+//            getMessageBox("Ошибка: эта участница уже зарегистрирована",true);
+//            return;
+//        }
+//        getMessageBox("Регистрация прошла успешно.",false);
+//    close();
+
+//    QSqlQuery q(db);
+//    if(!q.exec("SELECT * FROM lnr_competition;")){
+//            getMessageBox("Таблица не открывается",true);
+//            return;
+//    }
+
+//    q.seek(intDeleteOrAdd);
+//    int a;                                 //!!!
+//    QString name_id=q.value(1).toString();
+//    if(!q.exec("UPDATE lnr_competition SET Баллы='"+QString::number(a)+"' WHERE lnr_competition.Номинация='"+name_id+"';")){
+//        getMessageBox("Ошибка открытия таблицы соревнования", true);
+//        return;
+//    }
+//    if(!q.exec("SELECT * FROM lnr_competition;")){
+//        getMessageBox("Ошибка открытия таблиц", true);
+//        return;
+//    }
+//    model->setQuery(q);
+//    tableView->reset();
+}
+
 void MyDialogEnter::getMessageBox(const QString textError,bool error){
     QMessageBox msgBox;
     if(error) msgBox.setIcon(QMessageBox::Critical);
