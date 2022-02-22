@@ -56,18 +56,26 @@ void MainWindow::slotDeleteLesson(){
 
 void MainWindow::slotAddLesson(){
     QSqlQuery q(db);
+    QSqlQuery query(db);
     if(!q.exec("SELECT кол_во_номинаций FROM lnr_participants WHERE '"+property("record_book").toString()+"' = Номер_зачётки;")) {
         getMessageBox("Не открылась таблица с номинациями",true);
         return;
     };
     q.first();
     if (q.value(0).toInt() < 3){
-    if(!q.exec("INSERT INTO lnr_competition VALUES ('"+property("record_book").toString()
-               +"',"+lineEdit->text()+");")){
-        qDebug()<<q.lastError();
+
+        if(!q.exec("SELECT * FROM lnr_nominations WHERE '"+box->currentText()+"' = Название_номинации;")) {
+            getMessageBox("Не открылась таблица с номинациями",true);
+            return;
+        };
+        q.first();
+        getMessageBox(QString::number(q.value(1).toInt()),true);
+    if(!query.exec("INSERT INTO lnr_competition VALUES ('"+property("record_book").toString()
+               +"',"+QString::number(q.value(1).toInt())+");")){
+        qDebug()<<query.lastError();
         getMessageBox("Не удаётся добавить номинацию",true);
     }
-    model->setQuery(q);
+    model->setQuery(query);
     tableView->reset();
     }
     else {

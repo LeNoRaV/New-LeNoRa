@@ -39,6 +39,7 @@ private:
     Person person;
     Person2 person2;
     QPalette* palette;
+    QComboBox* box;
 
 public:
     MainWindow(QWidget *parent = nullptr);

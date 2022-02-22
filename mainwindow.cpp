@@ -422,10 +422,11 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotDeleteLesson(QPoint)));
 
         QPushButton* add=new QPushButton("&Добавить номинацию",this);
-        lineEdit=new QLineEdit(this);
-        lineEdit->setPlaceholderText("id номинации");
+        box=new QComboBox(this);
+        box->setPlaceholderText("Название номинации");
+        box->addItems({"Мисс БД 2022","Мисс Функан 2022","Мисс Вкусный борщ 2022","Мисс Лучшая староста группы 2022","Мисс Любительница спорта 2022"});
         QVBoxLayout* layout1=new QVBoxLayout();
-        layout1->addWidget(lineEdit);
+        layout1->addWidget(box);
         layout1->addWidget(add);
         layout1->addStretch(1);
         QHBoxLayout* layout2=new QHBoxLayout();
