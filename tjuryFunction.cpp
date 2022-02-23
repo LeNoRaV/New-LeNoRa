@@ -69,7 +69,6 @@ void MainWindow::slotAddLesson(){
             return;
         };
         q.first();
-        getMessageBox(QString::number(q.value(1).toInt()),true);
     if(!query.exec("INSERT INTO lnr_competition VALUES ('"+property("record_book").toString()
                +"',"+QString::number(q.value(1).toInt())+");")){
         qDebug()<<query.lastError();

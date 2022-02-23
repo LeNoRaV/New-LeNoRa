@@ -4,24 +4,6 @@
 #include "mainwindow.h"
 
 
-//для ввода баллов
-class MyDialogScore : public QDialog
-{
-    Q_OBJECT
-
-private:
-    QSqlDatabase* db;
-    QLineEdit* score;
-
-    QString* result;
-public:
-    explicit MyDialogScore(QSqlDatabase* db1, QString* result1, QWidget *parent = nullptr);
-
-    void getMessageBox(const QString textError,bool error);
-private slots:
-    void slotEnter();
-};
-
 //Диалог входа
 class MyDialogEnter : public QDialog
 {

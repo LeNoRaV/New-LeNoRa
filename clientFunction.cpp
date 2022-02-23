@@ -43,6 +43,7 @@ void MainWindow::slotChooseDiscipline(QPoint point){
 
 void MainWindow::slotChooseDiscipline(){
     QSqlQuery q(db);
+    QSqlQuery q0(db);
 
     if(!q.exec("SELECT * FROM lnr_nominations")){
             getMessageBox("Таблица не открывается",true);
@@ -52,13 +53,27 @@ void MainWindow::slotChooseDiscipline(){
     q.seek(intDeleteOrAdd);
     QString name0=q.value(0).toString();
 
+    if(!q0.exec("SELECT lnr_participants.Номер_зачётки FROM lnr_competition, lnr_nominations, lnr_participants WHERE lnr_nominations.Название_номинации = '"+ QString(name0) +"' AND lnr_nominations.\"ID\" = lnr_competition.Номинация AND lnr_participants.Номер_зачётки = lnr_competition.Участница ;")){
+        getMessageBox("Таблица с участницами не открывается",true);
+        return;
+     }
+
+    box=new QComboBox(this);
+    box->setPlaceholderText("Номер зачётки");
+    q0.first();
+    for (int i =0 ; i<q0.size(); ++i){
+        box->addItems({q0.value(0).toString()});
+        q0.next();
+    }
+
+    QRegularExpression regExp("[0-9]{2}");
+
     QPushButton* add=new QPushButton("&Выставить баллы",this);
-    lineEdit=new QLineEdit(this);
-    lineEdit->setPlaceholderText("Номер зачётки");
     lineEdit2=new QLineEdit(this);
     lineEdit2->setPlaceholderText("Кол-во баллов");
+    lineEdit2->setValidator(new QRegularExpressionValidator(regExp,this));
     QVBoxLayout* layout1=new QVBoxLayout();
-    layout1->addWidget(lineEdit);
+    layout1->addWidget(box);
     layout1->addWidget(lineEdit2);
     layout1->addWidget(add);
     layout1->addStretch(1);
@@ -86,11 +101,15 @@ void MainWindow::slotAddScore(){
             return;
     }
 
+    if (lineEdit2->text().toInt() > 10 or lineEdit2->text().toInt() < 0){
+        getMessageBox("Можно поставить от 0 до 10 баллов. Попробуйте еще раз.",true);
+        return;
+    }
+
     q.seek(intDeleteOrAdd);
     int name0=q.value(1).toInt();
-    getMessageBox(QString::number(name0),true);
 
-    if(!q.exec("UPDATE lnr_competition SET Баллы = "+lineEdit2->text()+" WHERE Участница = '"+lineEdit->text()+"' AND Номинация ="+QString::number(name0)+";")){
+    if(!q.exec("UPDATE lnr_competition SET Баллы = "+lineEdit2->text()+" WHERE Участница = '"+box->currentText()+"' AND Номинация ="+QString::number(name0)+";")){
         qDebug()<<q.lastError();
         getMessageBox("Не удаётся добавить",true);
     }

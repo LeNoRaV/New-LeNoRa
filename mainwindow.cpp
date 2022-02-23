@@ -241,10 +241,13 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         str=file.readAll();
         person.login=new QLineEdit(this);
         person.login->setText(str.section(',',0,0));
+        person.login->setPlaceholderText("Логин");
         person.name=new QLineEdit(this);
         person.name->setText(str.section(',',1,1));
+        person.name->setPlaceholderText("ФИО");
         person.password=new QLineEdit(this);
         person.password->setText(str.section(',',2,2));
+        person.password->setPlaceholderText("Пароль");
         QPushButton* button=new QPushButton("Изменить",this);
         QVBoxLayout* layout=new QVBoxLayout();
         layout->addWidget(person.login);
@@ -377,18 +380,25 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         q.first();
         person.login=new QLineEdit(this);
         person.login->setText(q.value(0).toString());
+        person.login->setPlaceholderText("Логин");
         person.name=new QLineEdit(this);
         person.name->setText(q.value(1).toString());
+        person.name->setPlaceholderText("ФИО");
         person.weight=new QLineEdit(this);
         person.weight->setText(q.value(2).toString());
+        person.weight->setPlaceholderText("Вес");
         person.height=new QLineEdit(this);
         person.height->setText(q.value(3).toString());
+        person.height->setPlaceholderText("Рост");
         person.age=new QLineEdit(this);
         person.age->setText(q.value(4).toString());
+        person.age->setPlaceholderText("Возраст");
         person.talant=new QLineEdit(this);
         person.talant->setText(q.value(5).toString());
+        person.talant->setPlaceholderText("Талан");
         person.password=new QLineEdit(this);
         person.password->setText(q.value(6).toString());
+        person.password->setPlaceholderText("Пароль");
 
 
         QPushButton* button=new QPushButton("Изменить",this);
@@ -409,10 +419,17 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
     }
     if(action->text()==tr("посмотреть свои номинации")){
         QSqlQuery query(db);
+        QSqlQuery q(db);
         if(!query.exec("SELECT lnr_nominations.Название_номинации, lnr_competition.Баллы FROM lnr_nominations, lnr_competition WHERE lnr_competition.Номинация = lnr_nominations.\"ID\" AND lnr_competition.Участница = '"+property("record_book").toString()+"';")){
             getMessageBox("Таблица с номинациями не открывается",true);
             return;
          }
+
+        if(!q.exec("SELECT lnr_nominations.Название_номинации FROM lnr_nominations;")){
+            getMessageBox("Таблица с номинациями не открывается",true);
+            return;
+         }
+
         delete centralWidget();
         tableView=new QTableView();
         tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -424,7 +441,12 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QPushButton* add=new QPushButton("&Добавить номинацию",this);
         box=new QComboBox(this);
         box->setPlaceholderText("Название номинации");
-        box->addItems({"Мисс БД 2022","Мисс Функан 2022","Мисс Вкусный борщ 2022","Мисс Лучшая староста группы 2022","Мисс Любительница спорта 2022"});
+        q.first();
+        for (int i =0 ; i<q.size(); ++i){
+            box->addItems({q.value(0).toString()});
+            q.next();
+        }
+//        box->addItems({"Мисс БД 2022","Мисс Функан 2022","Мисс Вкусный борщ 2022","Мисс Лучшая староста группы 2022","Мисс Любительница спорта 2022"});
         QVBoxLayout* layout1=new QVBoxLayout();
         layout1->addWidget(box);
         layout1->addWidget(add);
@@ -523,10 +545,13 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         str=file.readAll();
         person.login=new QLineEdit(this);
         person.login->setText(str.section(',',0,0));
+        person.login->setPlaceholderText("Логин");
         person.name=new QLineEdit(this);
         person.name->setText(str.section(',',1,1));
+        person.name->setPlaceholderText("ФИО");
         person.password=new QLineEdit(this);
         person.password->setText(str.section(',',2,2));
+        person.password->setPlaceholderText("Пароль");
         QPushButton* button=new QPushButton("Изменить",this);
         QVBoxLayout* layout=new QVBoxLayout();
         layout->addWidget(person.login);
@@ -547,6 +572,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
             qDebug()<<q.lastError();
             return;
          }
+
         delete centralWidget();
         tableView=new QTableView();
         tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
