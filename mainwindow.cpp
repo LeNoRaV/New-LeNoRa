@@ -75,10 +75,10 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
             adminProfile();
         }
         if(whoAndPassword.section(",",0,0)=="жюри"){
-            tutorProfile(whoAndPassword.section(",",1,1));
+            juryProfile(whoAndPassword.section(",",1,1));
         }
         if(whoAndPassword.section(",",0,0)=="участница"){
-            clientProfile(whoAndPassword.section(",",1,1));
+            participantProfile(whoAndPassword.section(",",1,1));
         }
     }
     if(action->text()==tr("&Участницы")){
@@ -107,7 +107,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         model->setQuery(query);
         tableView->setModel(model);
         tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-        connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotDeleteTutor2(QPoint)));
+        connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotDeletejury2(QPoint)));
         setCentralWidget(tableView);
     }
 
@@ -193,7 +193,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
             return;
         }
         query1.first();
-        int tutors=query1.value(0).toInt();
+        int jurys=query1.value(0).toInt();
 
         if(!query1.exec("SELECT Номер_зачётки, ФИО, Общие_баллы FROM lnr_participants ORDER BY Общие_баллы DESC;")){
             getMessageBox("Не открылась таблица с участницами",true);
@@ -209,7 +209,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QLabel* statistics=new QLabel("Промежуточные результаты");
         statistics->setFont(font2);
         statistics->setStyleSheet("color: rgb(255, 255, 255)");
-        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
+        QLabel* stat=new QLabel("Количество участниц: "+QString::number(jurys)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
         stat->setFont(font1);
         stat->setStyleSheet("color: rgb(255, 255, 255)");
 
@@ -405,7 +405,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QWidget* w=new QWidget(this);
         w->setLayout(layout);
         setCentralWidget(w);
-        connect(button,SIGNAL(pressed()),this,SLOT(changeInfoClient()));
+        connect(button,SIGNAL(pressed()),this,SLOT(changeInfoparticipant()));
     }
     if(action->text()==tr("посмотреть свои номинации")){
         QSqlQuery query(db);
@@ -474,7 +474,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
             return;
         }
         query1.first();
-        int tutors=query1.value(0).toInt();
+        int jurys=query1.value(0).toInt();
 
         if(!query1.exec("SELECT Номер_зачётки, ФИО, Общие_баллы FROM lnr_participants ORDER BY Общие_баллы DESC;")){
             getMessageBox("Не открылась таблица с участницами",true);
@@ -491,7 +491,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         statistics->setFont(font2);
         statistics->setStyleSheet("color: rgb(255, 255, 255)");
 
-        QLabel* stat=new QLabel("Количество участниц: "+QString::number(tutors)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
+        QLabel* stat=new QLabel("Количество участниц: "+QString::number(jurys)+"\n1 место: "+QString(winers1)+"\n2 место: "+QString(winers2)+"\n3 место: "+QString(winers3),this);
         stat->setFont(font1);
         stat->setStyleSheet("color: rgb(255, 255, 255)");
 
@@ -537,7 +537,7 @@ void MainWindow::slotTriggeredMenuBar(QAction* action){
         QWidget* w=new QWidget(this);
         w->setLayout(layout);
         setCentralWidget(w);
-        connect(button,SIGNAL(pressed()),this,SLOT(changeInfoTutor()));
+        connect(button,SIGNAL(pressed()),this,SLOT(changeInfojury()));
 
     }
     if(action->text()==tr("Мисс Бауман 2022")){

@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-void MainWindow::clientProfile(QString record_book){
+void MainWindow::participantProfile(QString record_book){
     changeMenuBar({{"Номинации","посмотреть свои номинации"},{"Другое","профиль участницы","настройки профиля участницы","выйти"}});
     palette->setColor(QPalette::Window,Qt::darkGray);
     setPalette(*palette);
@@ -10,7 +10,7 @@ void MainWindow::clientProfile(QString record_book){
     emit menuBar->triggered(act);
 }
 
-void MainWindow::changeInfoClient(){
+void MainWindow::changeInfoparticipant(){
     if(person.name->text()==nullptr ||person.password->text()==nullptr){
         getMessageBox("Нельзя оставлять поля пустыми!",true);
         return;

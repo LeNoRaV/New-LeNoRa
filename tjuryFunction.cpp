@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-void MainWindow::tutorProfile(QString telephone){
+void MainWindow::juryProfile(QString telephone){
     changeMenuBar({{"Поставить баллы", "Мисс Бауман 2022"},{"Другое","профиль жюри","настройки профиля жюри","выйти"}});
     palette->setColor(QPalette::Window,Qt::darkGray);
     setPalette(*palette);
@@ -10,7 +10,7 @@ void MainWindow::tutorProfile(QString telephone){
     emit menuBar->triggered(act);
 }
 
-void MainWindow::changeInfoTutor(){
+void MainWindow::changeInfojury(){
     if(person.name->text()==nullptr ||person.password->text()==nullptr){
         getMessageBox("Нельзя оставлять поля пустыми!",true);
         return;

@@ -93,9 +93,9 @@ MyDialogEnter::MyDialogEnter(QSqlDatabase* db1, QString* result1,QWidget *parent
     QPushButton* enter=new QPushButton("&Войти",this);
     QMenuBar* menuBar=new QMenuBar(this);
     QMenu* menu=new QMenu("&Регистрация",this);
-    QAction* client=new QAction(tr("&Мисс Бауман 2022"));
-    client->setIcon(QIcon(":/MyPictures/pictures/client.png"));
-    menu->addAction(client);
+    QAction* participant=new QAction(tr("&Мисс Бауман 2022"));
+    participant->setIcon(QIcon(":/MyPictures/pictures/participant.png"));
+    menu->addAction(participant);
     menuBar->addMenu(menu);
 
     QLabel* label=new QLabel("Войти как",this);

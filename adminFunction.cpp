@@ -58,16 +58,16 @@ void MainWindow::slotAddDiscipline(){
     tableView->reset();
 }
 
-void MainWindow::slotDeleteTutor2(QPoint point){  // delete participant
+void MainWindow::slotDeletejury2(QPoint point){  // delete participant
     intDeleteOrAdd=tableView->indexAt(point).row();
     QMenu* menu=new QMenu(this);
-    QAction* deleteTutor=new QAction(tr("Удалить"),this);
-    connect(deleteTutor,SIGNAL(triggered()),this,SLOT(slotDeleteTutor2()));
-    menu->addAction(deleteTutor);
+    QAction* deletejury=new QAction(tr("Удалить"),this);
+    connect(deletejury,SIGNAL(triggered()),this,SLOT(slotDeletejury2()));
+    menu->addAction(deletejury);
     menu->exec(QCursor::pos());
 }
 
-void MainWindow::slotDeleteTutor2(){
+void MainWindow::slotDeletejury2(){
     QSqlQuery q(db);
     if(!q.exec("SELECT * FROM lnr_participants;")){
         getMessageBox("Не открылась таблица с участницами",true);

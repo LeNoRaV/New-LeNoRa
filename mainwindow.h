@@ -48,8 +48,8 @@ public:
     void changeMenuBar(const QList<QStringList>);
 
     void adminProfile();
-    void tutorProfile(QString);
-    void clientProfile(QString);
+    void juryProfile(QString);
+    void participantProfile(QString);
 
     void getMessageBox(const QString,bool);
 private slots:
@@ -61,20 +61,20 @@ private slots:
 
     void slotAddScore();
 
-    void slotDeleteTutor2(QPoint);
-    void slotDeleteTutor2();
+    void slotDeletejury2(QPoint);
+    void slotDeletejury2();
 
     void changeInfoAdmin();
 
     void slotStatistics(int);
 
-    void changeInfoTutor();
+    void changeInfojury();
 
     void slotDeleteLesson(QPoint);
     void slotDeleteLesson();
     void slotAddLesson();
 
-    void changeInfoClient();
+    void changeInfoparticipant();
 
     void slotChooseDiscipline(QPoint);
     void slotChooseDiscipline();

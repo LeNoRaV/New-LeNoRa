@@ -14,7 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mydialog.cpp \
-    tutorFunction.cpp
+    tjuryFunction.cpp
 
 HEADERS += \
     mainwindow.h \
